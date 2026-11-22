@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTT Raqamli Portfolio Platformasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: white; }
+            .print-header { display: block !important; }
+            .print-card { break-inside: avoid; border: 1px solid #e2e8f0; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Faqat PDF / Chop etishda ko'rinadigan rasmiy sarlavha -->
+    <div id="printHeader" class="print-header hidden border-b-2 border-slate-800 pb-3 mb-5">
+        <div class="flex items-center justify-between gap-4">
+            <div>
+                <p id="printMttName" class="text-sm font-bold uppercase tracking-wide text-slate-900"></p>
+                <p id="printGroupName" class="text-xs text-slate-700 mt-0.5"></p>
+                <p id="printTeacherName" class="text-xs text-slate-700 mt-0.5"></p>
+            </div>
+            <div class="text-right">
+                <p class="text-xs font-bold text-slate-900">BOLA RIVOJLANISH PORTFOLIOSI</p>
+                <p id="printChildName" class="text-xs text-slate-700 mt-0.5"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yuqori panel -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 no-print">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <img src="file_00000000572882108b09263f3e78b31d.png" alt="MTT Portfolio emblemasi" class="w-12 h-12 rounded-xl object-contain bg-slate-50 border border-amber-300/70 p-0.5 shadow-sm shrink-0">
+                <div>
+                    <h1 class="font-bold text-slate-900 leading-tight">Raqamli Portfolio</h1>
+                    <p class="text-xs text-slate-500">"Ilk qadam" • Rivojlantirish markazlari kuzatuvi</p>
+                </div>
+            </div>
+
+            <!-- Rolni almashtirish -->
+            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button id="btnRoleTeacher" onclick="setRole('teacher')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-indigo-600 shadow-sm transition">
+                    👩‍🏫 Tarbiyachi
+                </button>
+                <button id="btnRoleParent" onclick="setRole('parent')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition">
+                    👨‍👩‍👧 Ota-ona
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Asosiy kontent -->
+    <main class="max-w-5xl mx-auto px-4 py-6">
+
+        <!-- MTT, Guruh va Tarbiyachi ma'lumotlari kartasi -->
+        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm flex-1">
+                <div>
+                    <span class="text-slate-400 block text-xs">Muassasa:</span>
+                    <strong id="displayMttName" class="text-slate-800">34-sonli DMTT</strong>
+                </div>
+                <div>
+                    <span class="text-slate-400 block text-xs">Guruh:</span>
+                    <strong id="displayGroupName" class="text-slate-800">Katta guruh</strong>
+                </div>
+                <div>
+                    <span class="text-slate-400 block text-xs">Mas’ul tarbiyachi:</span>
+                    <strong id="displayTeacherName" class="text-slate-800">Mas’ul tarbiyachi</strong>
+                </div>
+            </div>
+            <button id="btnEditMeta" onclick="toggleMetaModal(true)" class="no-print px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition self-start sm:self-center shrink-0">
+                ✏️ Ma’lumotlarni tahrirlash
+            </button>
+        </div>
+
+        <!-- Bola tanlash va Amallar paneli -->
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div id="childAvatar" class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-lg shrink-0">
+                    B
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs text-slate-400 font-medium">Tarbiyalanuvchi:</label>
+                        <button id="btnAddChild" onclick="toggleChildModal(true)" class="no-print text-xs font-semibold text-indigo-600 hover:underline">
+                            + Yangi bola qo‘shish
+                        </button>
+                    </div>
+                    <select id="childSelect" onchange="renderPortfolio()" class="font-bold text-base sm:text-lg text-slate-900 bg-transparent focus:outline-none cursor-pointer w-full">
+                        <!-- Bolalar ro'yxati JS orqali yuklanadi -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 no-print">
+                <button onclick="prepareAndPrint()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-50 transition">
+                    🖨️ PDF / Chop etish
+                </button>
+                <button id="btnAddModal" onclick="toggleModal(true)" class="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-xs sm:text-sm font-semibold hover:bg-indigo-700 shadow-sm transition">
+                    ➕ Yutuq qo‘shish
+                </button>
+            </div>
+        </div>
+
+        <!-- Ota-ona rejimi haqida xabar -->
+        <div id="parentNotice" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3.5 mb-6 text-sm no-print">
+            🔒 <strong>Ota-ona ko‘rinishi:</strong> Faqat ko‘rish rejimi yoqilgan (yozuv qo‘shish va o‘chirish yopiq).
+        </div>
+
+        <!-- Rivojlantirish markazlari filtri -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 mb-6 no-print" id="filterBar">
+            <button onclick="setFilter('Barchasi')" data-filter="Barchasi" class="filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-slate-900 text-white whitespace-nowrap">
+                Barcha markazlar
+            </button>
+            <button onclick="setFilter('Til va nutq markazi')" data-filter="Til va nutq markazi" class="filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 whitespace-nowrap">
+                📚 Til va nutq markazi
+            </button>
+            <button onclick="setFilter('Qurish-yasash, konstruksiyalash va matematika markazi')" data-filter="Qurish-yasash, konstruksiyalash va matematika markazi" class="filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 whitespace-nowrap">
+                🧱 Qurish-yasash, konstruksiyalash va matematika markazi
+            </button>
+            <button onclick="setFilter('Fan va tabiat markazi')" data-filter="Fan va tabiat markazi" class="filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 whitespace-nowrap">
+                🔬 Fan va tabiat markazi
+            </button>
+            <button onclick="setFilter('Syujetli-rolli o‘yinlar va sahnalashtirish markazi')" data-filter="Syujetli-rolli o‘yinlar va sahnalashtirish markazi" class="filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 whitespace-nowrap">
+                🎭 Syujetli-rolli o‘yinlar va sahnalashtirish markazi
+            </button>
+            <button onclick="setFilter('San’at markazi')" data-filter="San’at markazi" class="filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 whitespace-nowrap">
+                🎨 San’at markazi
+            </button>
+        </div>
+
+        <!-- Portfolio kartochkalari -->
+        <div id="portfolioGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+
+    </main>
+
+    <!-- MTT, Guruh va Tarbiyachi ma'lumotlarini tahrirlash oynasi -->
+    <div id="metaModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold text-lg text-slate-900">MTT va guruh ma’lumotlari</h2>
+                <button onclick="toggleMetaModal(false)" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
+            </div>
+            <form onsubmit="saveMeta(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">MTT nomi</label>
+                    <input type="text" id="inputMttName" required placeholder="Masalan: 34-sonli davlat MTT" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Guruh nomi</label>
+                    <input type="text" id="inputGroupName" required placeholder="Masalan: Katta guruh (5–6 yosh)" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Tarbiyachi F.I.Sh.</label>
+                    <input type="text" id="inputTeacherName" required placeholder="Masalan: Tarbiyachi F.I.Sh." class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="toggleMetaModal(false)" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100">Bekor qilish</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Yangi yutuq qo'shish oynasi -->
+    <div id="addModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold text-lg text-slate-900">Yangi kuzatuv va yutuq</h2>
+                <button onclick="toggleModal(false)" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
+            </div>
+
+            <form id="entryForm" onsubmit="addEntry(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Rivojlantirish markazi</label>
+                    <select id="entryCenter" required class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm">
+                        <option value="Til va nutq markazi">📚 Til va nutq markazi</option>
+                        <option value="Qurish-yasash, konstruksiyalash va matematika markazi">🧱 Qurish-yasash, konstruksiyalash va matematika markazi</option>
+                        <option value="Fan va tabiat markazi">🔬 Fan va tabiat markazi</option>
+                        <option value="Syujetli-rolli o‘yinlar va sahnalashtirish markazi">🎭 Syujetli-rolli o‘yinlar va sahnalashtirish markazi</option>
+                        <option value="San’at markazi">🎨 San’at markazi</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kompetensiya teglari</label>
+                    <div class="flex flex-wrap gap-1.5" id="tagSelector">
+                        <button type="button" onclick="toggleTag(this)" class="tag-opt px-2.5 py-1 rounded-lg border border-slate-200 text-xs text-slate-600">#MantiqiyFikrlash</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-opt px-2.5 py-1 rounded-lg border border-slate-200 text-xs text-slate-600">#MaydaMotorika</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-opt px-2.5 py-1 rounded-lg border border-slate-200 text-xs text-slate-600">#JamoaviyIsh</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-opt px-2.5 py-1 rounded-lg border border-slate-200 text-xs text-slate-600">#Ijodkorlik</button>
+                        <button type="button" onclick="toggleTag(this)" class="tag-opt px-2.5 py-1 rounded-lg border border-slate-200 text-xs text-slate-600">#MustaqilQaror</button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kuzatuv / Natija</label>
+                    <textarea id="entryNote" rows="3" required placeholder="Bola faoliyati va erishgan natijasini qisqa yozing..." class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Rasm yuklash (telefondan yoki kompyuterdan)</label>
+                    <input type="file" id="entryImage" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="toggleModal(false)" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100">Bekor qilish</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Yangi bola qo'shish oynasi -->
+    <div id="childModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-bold text-lg text-slate-900">Yangi tarbiyalanuvchi qo‘shish</h2>
+                <button onclick="toggleChildModal(false)" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
+            </div>
+            <form onsubmit="addChild(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Bola F.I.Sh.</label>
+                    <input type="text" id="newChildName" required placeholder="Masalan: Sardorbek Rasulov" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Yoshi / Guruh</label>
+                    <input type="text" id="newChildInfo" required placeholder="Masalan: 5 yosh • Katta guruh" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="toggleChildModal(false)" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100">Bekor qilish</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700">Qo‘shish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY_CHILDREN = 'mtt_portfolio_children_v1';
+        const STORAGE_KEY_RECORDS = 'mtt_portfolio_records_v1';
+        const STORAGE_KEY_META = 'mtt_portfolio_meta_v1';
+
+        let currentRole = 'teacher';
+        let currentFilter = 'Barchasi';
+
+        const defaultMeta = {
+            mttName: '34-sonli DMTT',
+            groupName: 'Katta guruh',
+            teacherName: 'Mas’ul tarbiyachi'
+        };
+
+        const defaultChildren = [
+            { id: 'Azizbek Karimov', label: 'Azizbek Karimov (5 yosh)' },
+            { id: 'Madina Sobirova', label: 'Madina Sobirova (5 yosh)' },
+            { id: 'Jasur Aliyev', label: 'Jasur Aliyev (6 yosh)' }
+        ];
+
+        const defaultRecords = [
+            {
+                id: 1,
+                child: 'Azizbek Karimov',
+                date: '2026-11-18',
+                center: 'Qurish-yasash, konstruksiyalash va matematika markazi',
+                tags: ['#MantiqiyFikrlash', '#MustaqilQaror'],
+                note: 'Magnitli konstruktor yordamida simmetrik shakl yasadi. Asos keng bo‘lsa bino nima uchun barqaror turishini tushuntirib berdi.',
+                image: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 2,
+                child: 'Madina Sobirova',
+                date: '2026-11-19',
+                center: 'Til va nutq markazi',
+                tags: ['#Ijodkorlik', '#JamoaviyIsh'],
+                note: 'Syujetli rasmlar asosida bog‘lanishli hikoya tuzdi va do‘stlariga ifodali aytib berdi.',
+                image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80'
+            }
+        ];
+
+        let metaData = JSON.parse(localStorage.getItem(STORAGE_KEY_META)) || defaultMeta;
+        let children = JSON.parse(localStorage.getItem(STORAGE_KEY_CHILDREN)) || defaultChildren;
+        let records = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS)) || defaultRecords;
+
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_KEY_META, JSON.stringify(metaData));
+            localStorage.setItem(STORAGE_KEY_CHILDREN, JSON.stringify(children));
+            localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(records));
+        }
+
+        function renderMeta() {
+            document.getElementById('displayMttName').textContent = metaData.mttName;
+            document.getElementById('displayGroupName').textContent = metaData.groupName;
+            document.getElementById('displayTeacherName').textContent = metaData.teacherName;
+        }
+
+        function toggleMetaModal(show) {
+            const modal = document.getElementById('metaModal');
+            if (show) {
+                document.getElementById('inputMttName').value = metaData.mttName;
+                document.getElementById('inputGroupName').value = metaData.groupName;
+                document.getElementById('inputTeacherName').value = metaData.teacherName;
+            }
+            modal.classList.toggle('hidden', !show);
+            modal.classList.toggle('flex', show);
+        }
+
+        function saveMeta(e) {
+            e.preventDefault();
+            metaData = {
+                mttName: document.getElementById('inputMttName').value.trim(),
+                groupName: document.getElementById('inputGroupName').value.trim(),
+                teacherName: document.getElementById('inputTeacherName').value.trim()
+            };
+            saveToStorage();
+            renderMeta();
+            toggleMetaModal(false);
+        }
+
+        function prepareAndPrint() {
+            const selectedChild = document.getElementById('childSelect').value;
+            document.getElementById('printMttName').textContent = metaData.mttName;
+            document.getElementById('printGroupName').textContent = `Guruh: ${metaData.groupName}`;
+            document.getElementById('printTeacherName').textContent = `Tarbiyachi: ${metaData.teacherName}`;
+            document.getElementById('printChildName').textContent = `Tarbiyalanuvchi: ${selectedChild}`;
+            window.print();
+        }
+
+        function renderChildOptions(selectedId = null) {
+            const select = document.getElementById('childSelect');
+            const prev = selectedId || select.value || (children[0] && children[0].id);
+            select.innerHTML = children.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+            if (prev && children.some(c => c.id === prev)) {
+                select.value = prev;
+            }
+        }
+
+        function addChild(e) {
+            e.preventDefault();
+            const name = document.getElementById('newChildName').value.trim();
+            const info = document.getElementById('newChildInfo').value.trim();
+            if (!name) return;
+
+            const id = name;
+            const label = info ? `${name} (${info})` : name;
+            if (!children.some(c => c.id === id)) {
+                children.push({ id, label });
+                saveToStorage();
+            }
+            renderChildOptions(id);
+            document.getElementById('newChildName').value = '';
+            document.getElementById('newChildInfo').value = '';
+            toggleChildModal(false);
+            renderPortfolio();
+        }
+
+        function setRole(role) {
+            currentRole = role;
+            const btnT = document.getElementById('btnRoleTeacher');
+            const btnP = document.getElementById('btnRoleParent');
+            const addBtn = document.getElementById('btnAddModal');
+            const addChildBtn = document.getElementById('btnAddChild');
+            const editMetaBtn = document.getElementById('btnEditMeta');
+            const notice = document.getElementById('parentNotice');
+
+            if (role === 'teacher') {
+                btnT.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-indigo-600 shadow-sm transition';
+                btnP.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+                addBtn.classList.remove('hidden');
+                addChildBtn.classList.remove('hidden');
+                editMetaBtn.classList.remove('hidden');
+                notice.classList.add('hidden');
+            } else {
+                btnP.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-emerald-600 shadow-sm transition';
+                btnT.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+                addBtn.classList.add('hidden');
+                addChildBtn.classList.add('hidden');
+                editMetaBtn.classList.add('hidden');
+                notice.classList.remove('hidden');
+            }
+            renderPortfolio();
+        }
+
+        function setFilter(center) {
+            currentFilter = center;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.filter === center) {
+                    btn.className = 'filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-slate-900 text-white whitespace-nowrap';
+                } else {
+                    btn.className = 'filter-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 whitespace-nowrap';
+                }
+            });
+            renderPortfolio();
+        }
+
+        function toggleModal(show) {
+            const modal = document.getElementById('addModal');
+            modal.classList.toggle('hidden', !show);
+            modal.classList.toggle('flex', show);
+        }
+
+        function toggleChildModal(show) {
+            const modal = document.getElementById('childModal');
+            modal.classList.toggle('hidden', !show);
+            modal.classList.toggle('flex', show);
+        }
+
+        function toggleTag(btn) {
+            btn.classList.toggle('bg-indigo-600');
+            btn.classList.toggle('text-white');
+            btn.classList.toggle('border-indigo-600');
+            btn.classList.toggle('selected-tag');
+        }
+
+        function addEntry(e) {
+            e.preventDefault();
+            const child = document.getElementById('childSelect').value;
+            const center = document.getElementById('entryCenter').value;
+            const note = document.getElementById('entryNote').value.trim();
+            const fileInput = document.getElementById('entryImage');
+            const selectedTags = Array.from(document.querySelectorAll('.selected-tag')).map(el => el.textContent);
+
+            const saveRecord = (imgUrl) => {
+                records.unshift({
+                    id: Date.now(),
+                    child,
+                    date: new Date().toISOString().split('T')[0],
+                    center,
+                    tags: selectedTags.length ? selectedTags : ['#Rivojlanish'],
+                    note,
+                    image: imgUrl
+                });
+                saveToStorage();
+                document.getElementById('entryForm').reset();
+                document.querySelectorAll('.selected-tag').forEach(el => toggleTag(el));
+                toggleModal(false);
+                renderPortfolio();
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (ev) => saveRecord(ev.target.result);
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                saveRecord('https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=600&q=80');
+            }
+        }
+
+        function deleteRecord(id) {
+            records = records.filter(r => r.id !== id);
+            saveToStorage();
+            renderPortfolio();
+        }
+
+        function renderPortfolio() {
+            const selectedChild = document.getElementById('childSelect').value;
+            document.getElementById('childAvatar').textContent = selectedChild ? selectedChild.charAt(0).toUpperCase() : 'B';
+
+            const filtered = records.filter(r => {
+                const matchChild = r.child === selectedChild;
+                const matchCenter = currentFilter === 'Barchasi' || r.center === currentFilter;
+                return matchChild && matchCenter;
+            });
+
+            const grid = document.getElementById('portfolioGrid');
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300 text-slate-400">Bu bo‘limda hozircha yozuvlar yo‘q.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => `
+                <article class="print-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs flex flex-col">
+                    <img src="${item.image}" alt="Portfolio rasmi" class="w-full h-52 object-cover bg-slate-100">
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700">${item.center}</span>
+                                <span class="text-xs text-slate-400">${item.date}</span>
+                            </div>
+                            <p class="text-sm text-slate-700 leading-relaxed mb-3">${item.note}</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                            <div class="flex flex-wrap gap-1.5">
+                                ${item.tags.map(t => `<span class="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">${t}</span>`).join('')}
+                            </div>
+                            ${currentRole === 'teacher' ? `<button onclick="deleteRecord(${item.id})" class="no-print text-xs text-rose-500 hover:underline">O‘chirish</button>` : ''}
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        renderMeta();
+        renderChildOptions();
+        renderPortfolio();
+    </script>
+</body>
+</html>
