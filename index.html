@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4f46e5" />
+  <title>MTT Raqamli Portfolio</title>
+  <link rel="manifest" href="./manifest.json" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --border: #e2e8f0;
+      --accent: #eef2ff;
+      --success: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 48px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .topbar {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand img {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+    }
+
+    .brand h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .brand p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button, select, input, textarea {
+      font-size: 0.92rem;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.15s ease;
+    }
+
+    .btn:hover {
+      background: #f1f5f9;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+      border-color: var(--success);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+
+    .meta-item {
+      margin-bottom: 8px;
+      font-size: 0.92rem;
+    }
+
+    .meta-label {
+      color: var(--muted);
+      display: block;
+      font-size: 0.8rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .form-group textarea {
+      min-height: 76px;
+      resize: vertical;
+    }
+
+    .entry {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+      background: #fafcff;
+    }
+
+    .entry-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: #fff;
+      }
+      .card, .topbar {
+        box-shadow: none;
+        border: 1px solid #cbd5e1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <div class="brand">
+        <img src="./file_00000000572882108b09263f3e78b31d.png" alt="MTT Portfolio logotipi" />
+        <div>
+          <h1>MTT Raqamli Portfolio</h1>
+          <p>"Ilk qadam" davlat dasturi asosida rivojlantirish markazlari kuzatuvi</p>
+        </div>
+      </div>
+
+      <div class="actions no-print">
+        <button id="btnInstall" class="btn btn-success hidden" onclick="installPWA()">Ilovani o‘rnatish</button>
+        <button class="btn" onclick="toggleRoleMode()">Tarbiyachi / Ota-ona</button>
+        <button class="btn" onclick="exportJSON()">Zaxira (JSON)</button>
+        <button class="btn" onclick="document.getElementById('importFile').click()">Tiklash</button>
+        <input id="importFile" type="file" accept="application/json" class="hidden" onchange="importJSON(event)" />
+        <button class="btn btn-primary" onclick="window.print()">Chop etish / PDF</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <span id="roleBadge" class="badge">Ota-ona ko‘rinishi</span>
+        <div id="metaView"></div>
+        <div id="metaEdit" class="hidden no-print">
+          <div class="form-group">
+            <label>Muassasa nomi</label>
+            <input id="inpOrg" type="text" />
+          </div>
+          <div class="form-group">
+            <label>Guruh</label>
+            <input id="inpGroup" type="text" />
+          </div>
+          <div class="form-group">
+            <label>Mas’ul tarbiyachi</label>
+            <input id="inpTeacher" type="text" />
+          </div>
+          <div class="form-group">
+            <label>Tarbiyachi paroli</label>
+            <input id="inpPin" type="text" />
+          </div>
+          <button class="btn btn-primary" onclick="saveMeta()">Ma’lumotlarni saqlash</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Bola va rivojlantirish markazi</h2>
+        <div class="form-group">
+          <label>Tarbiyalanuvchini tanlang</label>
+          <select id="selChild" onchange="renderEntries()"></select>
+        </div>
+
+        <div id="addChildBox" class="hidden no-print">
+          <div class="form-group">
+            <label>Yangi bola F.I.Sh.</label>
+            <input id="inpNewChild" type="text" placeholder="Masalan: Karimova Madina" />
+          </div>
+          <button class="btn" onclick="addChild()">Bola qo‘shish</button>
+        </div>
+      </section>
+    </div>
+
+    <section id="obsFormCard" class="card hidden no-print" style="margin-bottom: 16px;">
+      <h2>Yangi kuzatuv qo‘shish</h2>
+      <div class="grid">
+        <div class="form-group">
+          <label>Rivojlantirish markazi</label>
+          <select id="selCenter">
+            <option>Qurilish, konstruksiyalash va matematika markazi</option>
+            <option>Til va nutq markazi</option>
+            <option>San’at markazi</option>
+            <option>Syujetli-rolli o‘yinlar va dramalashtirish markazi</option>
+            <option>Fan va tabiat markazi</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Sana</label>
+          <input id="inpDate" type="date" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Kuzatuv natijasi va tavsiya</label>
+        <textarea id="inpNote" placeholder="Bolaning faolligi, mustaqil qaror qabul qilishi va ota-onaga tavsiya..."></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="addEntry()">Kuzatuvni saqlash</button>
+    </section>
+
+    <section class="card">
+      <h2>Portfolio kuzatuvlari</h2>
+      <div id="entriesList"></div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'mtt_portfolio_data_v1';
+    let isTeacher = false;
+    let deferredPrompt = null;
+
+    const defaultData = {
+      org: '34-sonli DMTT',
+      group: 'Katta guruh',
+      teacher: 'Tarbiyachi',
+      pin: '1234',
+      children: [
+        {
+          id: 'c1',
+          name: 'Namuna bola',
+          entries: [
+            {
+              id: 'e1',
+              date: new Date().toISOString().slice(0, 10),
+              center: 'Qurilish, konstruksiyalash va matematika markazi',
+              note: 'Geometrik shakllarni guruhlash va ketma-ketlikni to‘g‘ri tuzishda faol ishtirok etdi.'
+            }
+          ]
+        }
+      ]
+    };
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultData));
+          return structuredClone(defaultData);
+        }
+        return { ...structuredClone(defaultData), ...JSON.parse(raw) };
+      } catch {
+        return structuredClone(defaultData);
+      }
+    }
+
+    let state = loadData();
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function renderMeta() {
+      document.getElementById('roleBadge').textContent = isTeacher
+        ? 'Tarbiyachi rejimi (tahrirlash mumkin)'
+        : 'Ota-ona ko‘rinishi (faqat ko‘rish)';
+
+      document.getElementById('metaView').innerHTML = `
+        <div class="meta-item"><span class="meta-label">Muassasa</span><strong>${escapeHtml(state.org)}</strong></div>
+        <div class="meta-item"><span class="meta-label">Guruh</span><strong>${escapeHtml(state.group)}</strong></div>
+        <div class="meta-item"><span class="meta-label">Mas’ul tarbiyachi</span><strong>${escapeHtml(state.teacher)}</strong></div>
+      `;
+
+      document.getElementById('metaEdit').classList.toggle('hidden', !isTeacher);
+      document.getElementById('addChildBox').classList.toggle('hidden', !isTeacher);
+      document.getElementById('obsFormCard').classList.toggle('hidden', !isTeacher);
+
+      document.getElementById('inpOrg').value = state.org;
+      document.getElementById('inpGroup').value = state.group;
+      document.getElementById('inpTeacher').value = state.teacher;
+      document.getElementById('inpPin').value = state.pin;
+      document.getElementById('inpDate').value = new Date().toISOString().slice(0, 10);
+    }
+
+    function saveMeta() {
+      if (!isTeacher) return;
+      state.org = document.getElementById('inpOrg').value.trim() || state.org;
+      state.group = document.getElementById('inpGroup').value.trim() || state.group;
+      state.teacher = document.getElementById('inpTeacher').value.trim() || state.teacher;
+      state.pin = document.getElementById('inpPin').value.trim() || state.pin;
+      saveData();
+      renderMeta();
+      alert('Ma’lumotlar saqlandi.');
+    }
+
+    function toggleRoleMode() {
+      if (isTeacher) {
+        isTeacher = false;
+        renderMeta();
+        return;
+      }
+      const entered = prompt('Tarbiyachi parolini kiriting:');
+      if (entered === null) return;
+      if (entered === state.pin) {
+        isTeacher = true;
+        renderMeta();
+      } else {
+        alert('Parol noto‘g‘ri.');
+      }
+    }
+
+    function renderChildOptions() {
+      const sel = document.getElementById('selChild');
+      const currentVal = sel.value;
+      sel.innerHTML = state.children
+        .map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`)
+        .join('');
+      if (currentVal && state.children.some((c) => c.id === currentVal)) {
+        sel.value = currentVal;
+      }
+      renderEntries();
+    }
+
+    function addChild() {
+      if (!isTeacher) return;
+      const inp = document.getElementById('inpNewChild');
+      const name = inp.value.trim();
+      if (!name) return;
+      const newChild = {
+        id: 'c_' + Date.now(),
+        name,
+        entries: []
+      };
+      state.children.push(newChild);
+      inp.value = '';
+      saveData();
+      renderChildOptions();
+      document.getElementById('selChild').value = newChild.id;
+      renderEntries();
+    }
+
+    function addEntry() {
+      if (!isTeacher) return;
+      const childId = document.getElementById('selChild').value;
+      const center = document.getElementById('selCenter').value;
+      const date = document.getElementById('inpDate').value || new Date().toISOString().slice(0, 10);
+      const note = document.getElementById('inpNote').value.trim();
+      if (!childId || !note) {
+        alert('Kuzatuv matnini kiriting.');
+        return;
+      }
+      const child = state.children.find((c) => c.id === childId);
+      if (!child) return;
+      child.entries.unshift({
+        id: 'e_' + Date.now(),
+        date,
+        center,
+        note
+      });
+      document.getElementById('inpNote').value = '';
+      saveData();
+      renderEntries();
+    }
+
+    function deleteEntry(entryId) {
+      if (!isTeacher) return;
+      const childId = document.getElementById('selChild').value;
+      const child = state.children.find((c) => c.id === childId);
+      if (!child) return;
+      child.entries = child.entries.filter((e) => e.id !== entryId);
+      saveData();
+      renderEntries();
+    }
+
+    function renderEntries() {
+      const childId = document.getElementById('selChild').value;
+      const child = state.children.find((c) => c.id === childId);
+      const list = document.getElementById('entriesList');
+
+      if (!child || !child.entries.length) {
+        list.innerHTML = '<p style="color: var(--muted);">Hozircha kuzatuv yozuvlari yo‘q.</p>';
+        return;
+      }
+
+      list.innerHTML = child.entries
+        .map(
+          (e) => `
+          <div class="entry">
+            <div class="entry-top">
+              <strong>${escapeHtml(e.center)}</strong>
+              <span>${escapeHtml(e.date)}</span>
+            </div>
+            <p>${escapeHtml(e.note)}</p>
+            ${
+              isTeacher
+                ? `<div style="margin-top:8px;" class="no-print"><button class="btn" onclick="deleteEntry('${e.id}')">O‘chirish</button></div>`
+                : ''
+            }
+          </div>`
+        )
+        .join('');
+    }
+
+    function exportJSON() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mtt-portfolio-zaxira.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          if (parsed && Array.isArray(parsed.children)) {
+            state = { ...structuredClone(defaultData), ...parsed };
+            saveData();
+            renderMeta();
+            renderChildOptions();
+            alert('Zaxira muvaffaqiyatli tiklandi.');
+          } else {
+            alert('Fayl formati mos kelmadi.');
+          }
+        } catch {
+          alert('JSON faylni o‘qib bo‘lmadi.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('btnInstall').classList.remove('hidden');
+    });
+
+    async function installPWA() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.getElementById('btnInstall').classList.add('hidden');
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    renderMeta();
+    renderChildOptions();
+  </script>
+</body>
+</html>
