@@ -1,0 +1,28 @@
+```json
+{
+  "name": "MTT Raqamli Portfolio",
+  "short_name": "MTT Portfolio",
+  "description": "Rivojlantirish markazlari bo‘yicha bolalar portfoliosi",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./file_00000000572882108b09263f3e78b31d.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./file_00000000572882108b09263f3e78b31d.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
+
+```
